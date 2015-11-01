@@ -1,9 +1,6 @@
 package com.brandtnewtonsoftware.asle.leap;
 
 import com.brandtnewtonsoftware.asle.simulation.state.GameState;
-import com.brandtnewtonsoftware.asle.simulation.state.InStageState;
-import com.brandtnewtonsoftware.asle.simulation.state.NoHandsState;
-import com.brandtnewtonsoftware.asle.simulation.state.OuterHandState;
 import com.leapmotion.leap.*;
 
 import java.util.ArrayList;
@@ -21,7 +18,6 @@ public class LeapListener extends Listener {
     public static final Logger logger = Logger.getLogger(LeapListener.class.getName());
 
     private GameState currentGameState;
-    private List<GameState> gameStates = new ArrayList<>();
     private List<PrimaryHandPositionListener> primaryHandPositionListeners = new ArrayList<>();
     private List<HandCountListener> handCountListeners = new ArrayList<>();
     private int handCount;
@@ -32,10 +28,6 @@ public class LeapListener extends Listener {
         handler.setFormatter(new SimpleFormatter());
         handler.setLevel(Level.ALL);
         logger.addHandler(handler);
-
-        gameStates.add(new NoHandsState());
-        gameStates.add(new OuterHandState());
-        gameStates.add(new InStageState());
     }
 
     @Override
@@ -61,12 +53,6 @@ public class LeapListener extends Listener {
     public void onFrame(Controller controller) {
         super.onFrame(controller);
         Frame frame = controller.frame();
-        for (GameState gameState : gameStates) {
-            if (gameState.checkState(frame)) {
-                setGameState(gameState);
-                break;
-            }
-        }
 
         Hand defaultHand = LeapHelper.getDefaultHand(frame.hands());
         if (defaultHand != null) {

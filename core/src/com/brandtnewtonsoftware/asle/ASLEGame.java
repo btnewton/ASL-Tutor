@@ -1,38 +1,25 @@
 package com.brandtnewtonsoftware.asle;
 
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.brandtnewtonsoftware.asle.actor.HandNotPresentActor;
-import com.brandtnewtonsoftware.asle.actor.ProximityLeapActor;
 import com.brandtnewtonsoftware.asle.leap.LeapListener;
+import com.brandtnewtonsoftware.asle.simulation.state.GameState;
+import com.brandtnewtonsoftware.asle.stage.PromptEntranceStage;
 import com.leapmotion.leap.Controller;
 
-//Gdx.gl.glClearColor(.93f, .41f, .31f, 1);
-public class ASLEGame implements ApplicationListener {
-
+public class ASLEGame extends ApplicationAdapter {
 
 	private Controller controller;
-	private LeapListener listener;
+	private final LeapListener listener = new LeapListener();
 
-	private Stage stage;
+	private GameState gameState;
 
 	@Override
 	public void create() {
-		listener = new LeapListener();
 		controller = new Controller();
 		controller.addListener(listener);
-
-
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-
-		final ProximityLeapActor proximityLeapActor = new ProximityLeapActor(listener);
-		stage.addActor(proximityLeapActor);
-
-		final HandNotPresentActor handNotPresentActor = new HandNotPresentActor(listener);
-		stage.addActor(handNotPresentActor);
+		gameState = new PromptEntranceStage(this);
 	}
 
 	@Override
@@ -44,19 +31,17 @@ public class ASLEGame implements ApplicationListener {
 	public void render() {
 		Gdx.gl.glClearColor(.93f, .41f, .31f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		if (gameState != null){
+			gameState.render();
+		}
 	}
 
-	@Override
-	public void resize(int width, int height) {
+	public LeapListener getListener() {
+		return listener;
 	}
 
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
+	public void setGameState(GameState gameState) {
+		this.gameState.dispose();
+		this.gameState = gameState;
 	}
 }

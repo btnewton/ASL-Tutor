@@ -23,12 +23,11 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
  */
 public class HandNotPresentActor extends Actor implements HandCountListener {
 
-    Texture texture = new Texture(Gdx.files.internal("data/ic_hand.png"));
+    Texture texture = new Texture(Gdx.files.internal("img/ic_hand.png"));
 
-    public HandNotPresentActor(LeapListener leapListener) {
+    public HandNotPresentActor() {
         setPosition(getOriginalX(), getOriginalY());
         setBounds(getX(), getY(), texture.getWidth(), texture.getHeight());
-        leapListener.addHandCountListener(this);
         setUpAction();
     }
 
