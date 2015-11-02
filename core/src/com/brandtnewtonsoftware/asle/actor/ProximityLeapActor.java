@@ -3,13 +3,11 @@ package com.brandtnewtonsoftware.asle.actor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.brandtnewtonsoftware.asle.leap.HandCountListener;
-import com.brandtnewtonsoftware.asle.leap.PrimaryHandPositionListener;
+import com.brandtnewtonsoftware.asle.ASLEGame;
 import com.brandtnewtonsoftware.asle.leap.LeapHelper;
-import com.brandtnewtonsoftware.asle.leap.LeapListener;
-import com.leapmotion.leap.Leap;
+import com.brandtnewtonsoftware.asle.leap.PrimaryHandListener;
+import com.leapmotion.leap.Hand;
 import com.leapmotion.leap.Vector;
 
 import javax.swing.*;
@@ -22,7 +20,7 @@ import java.util.List;
 /**
  * Created by Brandt on 10/31/2015.
  */
-public class ProximityLeapActor extends Actor implements PrimaryHandPositionListener, ActionListener {
+public class ProximityLeapActor extends Actor implements PrimaryHandListener, ActionListener {
 
     private Timer timer;
     private boolean learnedEnterStage;
@@ -51,27 +49,6 @@ public class ProximityLeapActor extends Actor implements PrimaryHandPositionList
 
     }
 
-    @Override
-    public void onPrimaryHandUpdated(Vector handPosition) {
-        float scale;
-        double distanceFromCenterStage = LeapHelper.getDistanceToCenterStage(handPosition);
-
-        if (LeapHelper.inCenterStage(distanceFromCenterStage)) {
-            scale = 1;
-            if (!learnedEnterStage && !timer.isRunning()) {
-                timer.restart();
-            }
-        } else {
-            scale = (float) ((LeapHelper.OUTER_RADIUS - distanceFromCenterStage) / ((LeapHelper.OUTER_RADIUS - LeapHelper.STAGE_RADIUS) * 2)) + .5f;
-            if (timer.isRunning()) {
-                timer.stop();
-            }
-            setStagePresence(false);
-        }
-
-        setScale(scale);
-    }
-
     public void removeStagePresenceListener(StagePresenceListener listener) {
         stagePresenceListeners.remove(listener);
     }
@@ -93,5 +70,27 @@ public class ProximityLeapActor extends Actor implements PrimaryHandPositionList
     public void actionPerformed(ActionEvent e) {
         timer.stop();
         setStagePresence(true);
+    }
+
+    @Override
+    public void onPrimaryHandUpdated(Hand hand) {
+        float scale;
+        double distanceFromCenterStage = LeapHelper.getDistanceToCenterStage(hand.palmPosition());
+
+        if (LeapHelper.inCenterStage(distanceFromCenterStage)) {
+            scale = 1;
+            if (!learnedEnterStage && !timer.isRunning()) {
+                timer.restart();
+                ASLEGame.getHandCalibrator().reset();
+            }
+        } else {
+            scale = (float) ((LeapHelper.OUTER_RADIUS - distanceFromCenterStage) / ((LeapHelper.OUTER_RADIUS - LeapHelper.STAGE_RADIUS) * 2)) + .5f;
+            if (timer.isRunning()) {
+                timer.stop();
+            }
+            setStagePresence(false);
+        }
+
+        setScale(scale);
     }
 }

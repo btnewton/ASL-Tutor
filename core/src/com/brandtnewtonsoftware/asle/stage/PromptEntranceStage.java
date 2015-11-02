@@ -7,8 +7,9 @@ import com.brandtnewtonsoftware.asle.actor.ProximityLeapActor;
 import com.brandtnewtonsoftware.asle.actor.StagePresenceListener;
 import com.brandtnewtonsoftware.asle.leap.HandCountListener;
 import com.brandtnewtonsoftware.asle.leap.LeapListener;
-import com.brandtnewtonsoftware.asle.leap.PrimaryHandPositionListener;
+import com.brandtnewtonsoftware.asle.leap.PrimaryHandListener;
 import com.brandtnewtonsoftware.asle.simulation.state.*;
+import com.leapmotion.leap.Hand;
 import com.leapmotion.leap.Vector;
 
 import java.util.LinkedList;
@@ -17,16 +18,16 @@ import java.util.List;
 /**
  * Prompts user to move hand over leap motion device
  */
-public class PromptEntranceStage extends GameState implements PrimaryHandPositionListener, StagePresenceListener, HandCountListener {
+public class PromptEntranceStage extends GameState implements PrimaryHandListener, StagePresenceListener, HandCountListener {
 
-    private List<PrimaryHandPositionListener> primaryHandPositionListeners = new LinkedList<>();
+    private List<PrimaryHandListener> primaryHandPositionListeners = new LinkedList<>();
     private List<HandCountListener> handCountListeners = new LinkedList<>();
 
     public PromptEntranceStage(ASLEGame game) {
         super(game);
         LeapListener listener = game.getListener();
         listener.addHandCountListener(this);
-        listener.addPrimaryHandPositionListener(this);
+        listener.addPrimaryHandListener(this);
 
         final ProximityLeapActor proximityLeapActor = new ProximityLeapActor();
         primaryHandPositionListeners.add(proximityLeapActor);
@@ -41,7 +42,7 @@ public class PromptEntranceStage extends GameState implements PrimaryHandPositio
     @Override
     public void dispose() {
         getGame().getListener().removeHandCountListener(this);
-        getGame().getListener().removePrimaryHandPositionListener(this);
+        getGame().getListener().removePrimaryHandListener(this);
     }
 
     @Override
@@ -52,16 +53,16 @@ public class PromptEntranceStage extends GameState implements PrimaryHandPositio
     }
 
     @Override
-    public void onPrimaryHandUpdated(Vector handPosition) {
-        for (PrimaryHandPositionListener listener : primaryHandPositionListeners) {
-            listener.onPrimaryHandUpdated(handPosition);
+    public void onStagePresenceChange(boolean onStage) {
+        if (onStage) {
+            Gdx.app.postRunnable(() -> getGame().setGameState(new TestStage(getGame())));
         }
     }
 
     @Override
-    public void onStagePresenceChange(boolean onStage) {
-        if (onStage) {
-            Gdx.app.postRunnable(() -> getGame().setGameState(new TestStage(getGame())));
+    public void onPrimaryHandUpdated(Hand hand) {
+        for (PrimaryHandListener listener : primaryHandPositionListeners) {
+            listener.onPrimaryHandUpdated(hand);
         }
     }
 }

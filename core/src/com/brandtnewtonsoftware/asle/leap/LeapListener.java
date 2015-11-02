@@ -4,6 +4,7 @@ import com.brandtnewtonsoftware.asle.simulation.state.GameState;
 import com.leapmotion.leap.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
@@ -18,9 +19,10 @@ public class LeapListener extends Listener {
     public static final Logger logger = Logger.getLogger(LeapListener.class.getName());
 
     private GameState currentGameState;
-    private List<PrimaryHandPositionListener> primaryHandPositionListeners = new ArrayList<>();
-    private List<HandCountListener> handCountListeners = new ArrayList<>();
+    private List<HandCountListener> handCountListeners = new LinkedList<>();
+    private List<PrimaryHandListener> primaryHandListeners = new LinkedList<>();
     private int handCount;
+    private double maxIndexExtension = 0;
 
     public LeapListener() {
         logger.setLevel(Level.ALL);
@@ -49,6 +51,7 @@ public class LeapListener extends Listener {
     }
 
 
+
     @Override
     public void onFrame(Controller controller) {
         super.onFrame(controller);
@@ -56,9 +59,8 @@ public class LeapListener extends Listener {
 
         Hand defaultHand = LeapHelper.getDefaultHand(frame.hands());
         if (defaultHand != null) {
-            com.leapmotion.leap.Vector handPosition = defaultHand.palmPosition();
-            for (PrimaryHandPositionListener listener : primaryHandPositionListeners) {
-                listener.onPrimaryHandUpdated(handPosition);
+            for (PrimaryHandListener listener : primaryHandListeners) {
+                listener.onPrimaryHandUpdated(defaultHand);
             }
         }
 
@@ -71,11 +73,12 @@ public class LeapListener extends Listener {
         }
     }
 
-    public void addPrimaryHandPositionListener(PrimaryHandPositionListener listener) {
-        primaryHandPositionListeners.add(listener);
+
+    public void addPrimaryHandListener(PrimaryHandListener listener) {
+        primaryHandListeners.add(listener);
     }
-    public void removePrimaryHandPositionListener(PrimaryHandPositionListener listener) {
-        primaryHandPositionListeners.remove(listener);
+    public void removePrimaryHandListener(PrimaryHandListener listener) {
+        primaryHandListeners.remove(listener);
     }
 
     public void addHandCountListener(HandCountListener listener) {

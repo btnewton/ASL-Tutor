@@ -3,6 +3,7 @@ package com.brandtnewtonsoftware.asle;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.brandtnewtonsoftware.asle.knn.HandCalibrator;
 import com.brandtnewtonsoftware.asle.leap.LeapListener;
 import com.brandtnewtonsoftware.asle.simulation.state.GameState;
 import com.brandtnewtonsoftware.asle.stage.PromptEntranceStage;
@@ -14,11 +15,13 @@ public class ASLEGame extends ApplicationAdapter {
 	private final LeapListener listener = new LeapListener();
 
 	private GameState gameState;
+	private static HandCalibrator handCalibrator = new HandCalibrator();
 
 	@Override
 	public void create() {
 		controller = new Controller();
 		controller.addListener(listener);
+		listener.addPrimaryHandListener(handCalibrator::calibrate);
 		gameState = new PromptEntranceStage(this);
 	}
 
@@ -43,5 +46,9 @@ public class ASLEGame extends ApplicationAdapter {
 	public void setGameState(GameState gameState) {
 		this.gameState.dispose();
 		this.gameState = gameState;
+	}
+
+	public static HandCalibrator getHandCalibrator() {
+		return handCalibrator;
 	}
 }
