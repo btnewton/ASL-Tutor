@@ -17,6 +17,11 @@ public abstract class Sign {
         this.fingersExtended = fingersExtended;
     }
 
+
+    public int getValue() {
+        return VALUE;
+    }
+
     public boolean equals(LiteHand hand) {
         double[] extensions = hand.getFingerExtensions();
         for (int i = 0; i < 5; i++) {

@@ -3,8 +3,7 @@ package com.brandtnewtonsoftware.asle.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.brandtnewtonsoftware.asle.ASLEGame;
-
-import java.util.logging.Logger;
+import com.brandtnewtonsoftware.asle.util.Database;
 
 public class DesktopLauncher {
 	public static void main(String[] arg) {
