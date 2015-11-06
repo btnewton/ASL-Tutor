@@ -18,6 +18,8 @@ public class User {
         this.loginCount = loginCount;
     }
 
+
+
     public int getId() {
         return id;
     }

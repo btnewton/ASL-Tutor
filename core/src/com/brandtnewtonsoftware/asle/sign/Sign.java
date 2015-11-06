@@ -7,7 +7,7 @@ import com.brandtnewtonsoftware.asle.knn.LiteHand;
  */
 public abstract class Sign {
 
-    public static final double EXTENSION_FLOOR = .92;
+    public static final double EXTENSION_FLOOR = .85;
 
     public final int VALUE;
     public final boolean[] fingersExtended;

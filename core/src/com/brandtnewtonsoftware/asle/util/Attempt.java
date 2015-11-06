@@ -25,6 +25,14 @@ public class Attempt {
         return successCount;
     }
 
+    public void addSuccessfulSign() {
+        attemptCount++;
+        successCount++;
+    }
+    public void addUnsuccessfulSign() {
+        attemptCount++;
+    }
+
     public Sign getSign() {
         return sign;
     }

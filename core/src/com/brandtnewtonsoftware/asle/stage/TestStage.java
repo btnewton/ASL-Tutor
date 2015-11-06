@@ -2,6 +2,7 @@ package com.brandtnewtonsoftware.asle.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.brandtnewtonsoftware.asle.ASLEGame;
+import com.brandtnewtonsoftware.asle.User;
 import com.brandtnewtonsoftware.asle.actor.SignActor;
 import com.brandtnewtonsoftware.asle.actor.SignRegisteredListener;
 import com.brandtnewtonsoftware.asle.actor.SuccessActor;
@@ -10,11 +11,14 @@ import com.brandtnewtonsoftware.asle.leap.LeapListener;
 import com.brandtnewtonsoftware.asle.leap.PrimaryHandListener;
 import com.brandtnewtonsoftware.asle.sign.Sign;
 import com.brandtnewtonsoftware.asle.simulation.state.GameState;
+import com.brandtnewtonsoftware.asle.util.Attempt;
+import com.brandtnewtonsoftware.asle.util.Database;
 import com.leapmotion.leap.Hand;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -79,6 +83,20 @@ public class TestStage extends GameState implements PrimaryHandListener, HandCou
                 signActor.setVisible(false);
                 successActor.setVisible(true);
                 timer.restart();
+                User user = ASLEGame.getUser();
+                Database database = new Database();
+                try {
+                    Attempt attempt = database.getAttempt(user, sign);
+                    if (attempt == null)
+                        attempt = new Attempt(sign, 0, 0);
+
+                    attempt.addSuccessfulSign();
+
+                    database.updateAttempt(user, attempt);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     }

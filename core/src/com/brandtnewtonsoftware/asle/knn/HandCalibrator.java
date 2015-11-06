@@ -12,7 +12,7 @@ public class HandCalibrator {
     private final double[] maxFingerLengths = new double[5];
 
     public void calibrate(Hand hand) {
-        hand.fingers().forEach(finger -> calibrateFinger(finger, hand.palmPosition()));
+        hand.fingers().forEach(finger -> calibrateFinger(finger, hand.wristPosition()));
         evaluateHand(hand);
     }
 
@@ -28,7 +28,7 @@ public class HandCalibrator {
     public LiteHand evaluateHand(Hand hand) {
         LiteHand liteHand = new LiteHand();
         hand.fingers().forEach(finger -> {
-            double extension = percentExtended(finger.type(), fingerLength(finger, hand.palmPosition()));
+            double extension = percentExtended(finger.type(), fingerLength(finger, hand.wristPosition()));
             liteHand.setFingerExtension(finger.type().swigValue(), extension);
         });
         return liteHand;
