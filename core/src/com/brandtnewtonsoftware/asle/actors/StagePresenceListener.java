@@ -1,4 +1,4 @@
-package com.brandtnewtonsoftware.asle.actor;
+package com.brandtnewtonsoftware.asle.actors;
 
 /**
  * Created by Brandt on 11/1/2015.

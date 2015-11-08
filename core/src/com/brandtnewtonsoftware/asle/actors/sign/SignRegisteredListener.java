@@ -1,4 +1,4 @@
-package com.brandtnewtonsoftware.asle.actor;
+package com.brandtnewtonsoftware.asle.actors.sign;
 
 import com.brandtnewtonsoftware.asle.sign.Sign;
 

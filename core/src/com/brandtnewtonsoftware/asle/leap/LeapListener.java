@@ -22,7 +22,6 @@ public class LeapListener extends Listener {
     private List<HandCountListener> handCountListeners = new LinkedList<>();
     private List<PrimaryHandListener> primaryHandListeners = new LinkedList<>();
     private int handCount;
-    private double maxIndexExtension = 0;
 
     public LeapListener() {
         logger.setLevel(Level.ALL);

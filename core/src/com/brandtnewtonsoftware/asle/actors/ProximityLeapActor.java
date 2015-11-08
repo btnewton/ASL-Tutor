@@ -1,14 +1,13 @@
-package com.brandtnewtonsoftware.asle.actor;
+package com.brandtnewtonsoftware.asle.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.brandtnewtonsoftware.asle.ASLEGame;
+import com.brandtnewtonsoftware.asle.ASLTutorGame;
 import com.brandtnewtonsoftware.asle.leap.LeapHelper;
 import com.brandtnewtonsoftware.asle.leap.PrimaryHandListener;
 import com.leapmotion.leap.Hand;
-import com.leapmotion.leap.Vector;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -81,7 +80,7 @@ public class ProximityLeapActor extends Actor implements PrimaryHandListener, Ac
             scale = 1;
             if (!learnedEnterStage && !timer.isRunning()) {
                 timer.restart();
-                ASLEGame.getHandCalibrator().reset();
+                ASLTutorGame.getHandCalibrator().reset();
             }
         } else {
             scale = (float) ((LeapHelper.OUTER_RADIUS - distanceFromCenterStage) / ((LeapHelper.OUTER_RADIUS - LeapHelper.STAGE_RADIUS) * 2)) + .5f;

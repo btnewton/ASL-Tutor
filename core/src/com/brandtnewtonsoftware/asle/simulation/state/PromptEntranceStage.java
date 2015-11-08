@@ -1,16 +1,14 @@
-package com.brandtnewtonsoftware.asle.stage;
+package com.brandtnewtonsoftware.asle.simulation.state;
 
 import com.badlogic.gdx.Gdx;
-import com.brandtnewtonsoftware.asle.ASLEGame;
-import com.brandtnewtonsoftware.asle.actor.HandNotPresentActor;
-import com.brandtnewtonsoftware.asle.actor.ProximityLeapActor;
-import com.brandtnewtonsoftware.asle.actor.StagePresenceListener;
+import com.brandtnewtonsoftware.asle.ASLTutorGame;
+import com.brandtnewtonsoftware.asle.actors.HandNotPresentActor;
+import com.brandtnewtonsoftware.asle.actors.ProximityLeapActor;
+import com.brandtnewtonsoftware.asle.actors.StagePresenceListener;
 import com.brandtnewtonsoftware.asle.leap.HandCountListener;
 import com.brandtnewtonsoftware.asle.leap.LeapListener;
 import com.brandtnewtonsoftware.asle.leap.PrimaryHandListener;
-import com.brandtnewtonsoftware.asle.simulation.state.*;
 import com.leapmotion.leap.Hand;
-import com.leapmotion.leap.Vector;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +21,7 @@ public class PromptEntranceStage extends GameState implements PrimaryHandListene
     private List<PrimaryHandListener> primaryHandPositionListeners = new LinkedList<>();
     private List<HandCountListener> handCountListeners = new LinkedList<>();
 
-    public PromptEntranceStage(ASLEGame game) {
+    public PromptEntranceStage(ASLTutorGame game) {
         super(game);
         LeapListener listener = game.getListener();
         listener.addHandCountListener(this);

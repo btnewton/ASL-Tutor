@@ -4,20 +4,18 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
-import com.brandtnewtonsoftware.asle.knn.HandCalibrator;
+import com.brandtnewtonsoftware.asle.models.HandCalibrator;
 import com.brandtnewtonsoftware.asle.leap.LeapListener;
+import com.brandtnewtonsoftware.asle.models.User;
 import com.brandtnewtonsoftware.asle.simulation.state.GameState;
-import com.brandtnewtonsoftware.asle.stage.PromptEntranceStage;
-import com.brandtnewtonsoftware.asle.stage.TestStage;
+import com.brandtnewtonsoftware.asle.simulation.state.PromptEntranceStage;
 import com.brandtnewtonsoftware.asle.util.Database;
 import com.leapmotion.leap.Controller;
 
 import javax.swing.*;
-import java.awt.*;
-import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ASLEGame extends ApplicationAdapter implements Input.TextInputListener {
+public class ASLTutorGame extends ApplicationAdapter implements Input.TextInputListener {
 
 	private static User user;
 	private Controller controller;
@@ -28,15 +26,19 @@ public class ASLEGame extends ApplicationAdapter implements Input.TextInputListe
 
 	@Override
 	public void create() {
-		Gdx.input.getTextInput(this, "Welcome to ASL Tutor!", null, "Name");
+		new Database();
 		controller = new Controller();
 		controller.addListener(listener);
 		listener.addPrimaryHandListener(handCalibrator::calibrate);
+
+//		Gdx.input.getTextInput(this, "Welcome to ASL Tutor!", null, "Name");
+		input("Brandt");
 	}
 
 	@Override
 	public void dispose() {
 		controller.removeListener(listener);
+		controller.delete();
 	}
 
 	@Override
@@ -64,23 +66,23 @@ public class ASLEGame extends ApplicationAdapter implements Input.TextInputListe
 
 	@Override
 	public void input(String text) {
-		Database database = new Database();
 		text = Database.sanitizeString(text.trim());
 
 		if (!text.isEmpty()) {
 			User user = null;
 			try {
-				user = database.getUser(text);
+				user = User.getUser(text);
 				if (user == null) {
-					user = database.newUser(text);
+					user = new User(text);
 				}
-				database.loginUser(user);
+				user.incrementLoginCount();
+				user.save();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 
 			if (user != null) {
-				ASLEGame.user = user;
+				ASLTutorGame.user = user;
 				Gdx.app.postRunnable(() -> setGameState(new PromptEntranceStage(this)));
 				return;
 			}

@@ -1,7 +1,5 @@
-package com.brandtnewtonsoftware.asle.knn;
+package com.brandtnewtonsoftware.asle.models;
 
-import com.brandtnewtonsoftware.asle.sign.*;
-import com.brandtnewtonsoftware.asle.sign.Sign;
 import com.leapmotion.leap.*;
 
 /**
@@ -25,13 +23,13 @@ public class HandCalibrator {
         return vectorDistance(palmCenter, endVector);
     }
 
-    public LiteHand evaluateHand(Hand hand) {
-        LiteHand liteHand = new LiteHand();
+    public RelativeHand evaluateHand(Hand hand) {
+        RelativeHand relativeHand = new RelativeHand();
         hand.fingers().forEach(finger -> {
             double extension = percentExtended(finger.type(), fingerLength(finger, hand.wristPosition()));
-            liteHand.setFingerExtension(finger.type().swigValue(), extension);
+            relativeHand.setFingerExtension(finger.type().swigValue(), extension);
         });
-        return liteHand;
+        return relativeHand;
     }
 
     // Removes calibrated lengths
@@ -39,17 +37,6 @@ public class HandCalibrator {
         for (int i = 0; i < maxFingerLengths.length; i++) {
             maxFingerLengths[i] = 0;
         }
-    }
-
-
-    private void summarizeHand(LiteHand hand) {
-        String[] fingerNames = new String[]{"Thumb", "Index", "Mid", "Ring", "Pink"};
-        double[] fingerExtensions = hand.getFingerExtensions();
-        for (int i = 0; i < fingerNames.length; i++) {
-            boolean extended = fingerExtensions[i] > Sign.EXTENSION_FLOOR;
-            System.out.print(fingerNames[i] + ": " + (extended? "OUT" : "IN") + "\t");
-        }
-        System.out.println("");
     }
 
     private double percentExtended(Finger.Type fingerType, double length) {

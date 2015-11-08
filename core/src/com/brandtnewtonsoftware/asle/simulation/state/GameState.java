@@ -1,14 +1,8 @@
 package com.brandtnewtonsoftware.asle.simulation.state;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.brandtnewtonsoftware.asle.ASLEGame;
-import com.brandtnewtonsoftware.asle.StageManager;
-import com.brandtnewtonsoftware.asle.leap.HandCountListener;
-import com.brandtnewtonsoftware.asle.stage.PromptEntranceStage;
-import com.leapmotion.leap.Frame;
+import com.brandtnewtonsoftware.asle.ASLTutorGame;
 
 /**
  * Created by Brandt on 10/29/2015.
@@ -16,9 +10,9 @@ import com.leapmotion.leap.Frame;
 public abstract class GameState {
 
     protected Stage stage;
-    private ASLEGame game;
+    private ASLTutorGame game;
 
-    public GameState(ASLEGame game) {
+    public GameState(ASLTutorGame game) {
         this.game = game;
         stage = new Stage();
     }
@@ -31,7 +25,7 @@ public abstract class GameState {
     // Remove listeners and deallocate resources
     public abstract void dispose();
 
-    protected ASLEGame getGame() {
+    protected ASLTutorGame getGame() {
         return game;
     }
 }

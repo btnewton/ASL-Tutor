@@ -1,4 +1,4 @@
-package com.brandtnewtonsoftware.asle.actor;
+package com.brandtnewtonsoftware.asle.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -7,16 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
-import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.brandtnewtonsoftware.asle.leap.HandCountListener;
-import com.brandtnewtonsoftware.asle.leap.LeapHelper;
-import com.brandtnewtonsoftware.asle.leap.LeapListener;
-import com.leapmotion.leap.Vector;
-import javafx.scene.shape.MoveTo;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
 /**
  * Created by Brandt on 10/31/2015.

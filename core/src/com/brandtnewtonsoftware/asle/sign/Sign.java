@@ -1,6 +1,6 @@
 package com.brandtnewtonsoftware.asle.sign;
 
-import com.brandtnewtonsoftware.asle.knn.LiteHand;
+import com.brandtnewtonsoftware.asle.models.RelativeHand;
 
 /**
  * Created by Brandt on 11/1/2015.
@@ -22,7 +22,7 @@ public abstract class Sign {
         return VALUE;
     }
 
-    public boolean equals(LiteHand hand) {
+    public boolean equals(RelativeHand hand) {
         double[] extensions = hand.getFingerExtensions();
         for (int i = 0; i < 5; i++) {
             if (fingersExtended[i] ^ extensions[i] >= EXTENSION_FLOOR) {

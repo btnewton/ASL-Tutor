@@ -1,11 +1,9 @@
-package com.brandtnewtonsoftware.asle.knn;
-
-import java.util.Iterator;
+package com.brandtnewtonsoftware.asle.models;
 
 /**
  * Created by Brandt on 11/1/2015.
  */
-public final class LiteHand {
+public final class RelativeHand {
 
     private final double[] fingerExtensions = new double[5];
 

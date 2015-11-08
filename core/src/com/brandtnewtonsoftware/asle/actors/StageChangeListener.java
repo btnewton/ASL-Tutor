@@ -1,4 +1,4 @@
-package com.brandtnewtonsoftware.asle.actor;
+package com.brandtnewtonsoftware.asle.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
