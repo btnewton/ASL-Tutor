@@ -1,9 +1,8 @@
 package com.brandtnewtonsoftware.asle.leap;
 
-import com.brandtnewtonsoftware.asle.simulation.state.GameState;
+import com.brandtnewtonsoftware.asle.stage.StageManager;
 import com.leapmotion.leap.*;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -18,7 +17,7 @@ public class LeapListener extends Listener {
 
     public static final Logger logger = Logger.getLogger(LeapListener.class.getName());
 
-    private GameState currentGameState;
+    private StageManager stageManager;
     private List<HandCountListener> handCountListeners = new LinkedList<>();
     private List<PrimaryHandListener> primaryHandListeners = new LinkedList<>();
     private int handCount;
@@ -38,14 +37,14 @@ public class LeapListener extends Listener {
         logger.info("Controller Connected!");
     }
 
-    public GameState getCurrentGameState() {
-        return currentGameState;
+    public StageManager getStageManager() {
+        return stageManager;
     }
 
-    private void setGameState(GameState gameState) {
-        if (currentGameState == null || !currentGameState.equals(gameState)) {
-            currentGameState = gameState;
-            logger.info("Log state switched to " + gameState.getClass().getSimpleName());
+    private void setGameState(StageManager stageManager) {
+        if (this.stageManager == null || !this.stageManager.equals(stageManager)) {
+            this.stageManager = stageManager;
+            logger.info("Log state switched to " + this.stageManager.getClass().getSimpleName());
         }
     }
 

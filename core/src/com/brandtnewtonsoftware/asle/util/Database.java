@@ -11,21 +11,30 @@ import java.util.Locale;
  * Helper class for all interactions with the SQLite database used for this program.
  */
 public class Database {
-    public static final String DATABASE_FILE = "data/AslTutor.db";
-    private static final long VERSION = 2;
+    private static boolean checkedVersion;
 
-    public Database() {
+    private static final String DATABASE_FILE = "data/AslTutor.db";
+
+    // Update to number last of script to run
+    private static final long VERSION = 5;
+
+    public static void checkVersion() {
         try {
-            if (VERSION != getVersion()) {
-                runScripts();
-                setVersion();
+            if (!checkedVersion) {
+                long currentDbVersion = getVersion();
+                if (VERSION != currentDbVersion){
+                    runScripts(currentDbVersion, VERSION);
+                    setVersion();
+                }
+                checkedVersion = true;
+                System.out.println("Database up to date.");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         Connection connection = null;
         try {
             DriverManager.registerDriver(new org.sqlite.JDBC());
@@ -37,7 +46,7 @@ public class Database {
         return connection;
     }
 
-    private void setVersion() throws SQLException {
+    private static void setVersion() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement stmt = null;
 
@@ -57,7 +66,7 @@ public class Database {
         }
     }
 
-    private long getVersion() throws SQLException {
+    private static long getVersion() throws SQLException {
         long version = 0;
         Connection connection = getConnection();
         Statement stmt = null;
@@ -80,7 +89,7 @@ public class Database {
         return version;
     }
 
-    private void runScripts() throws Exception {
+    private static void runScripts(long startRange, long endVersion) throws Exception {
         final String scriptPath = "data/scripts";
         Connection connection = getConnection();
 
@@ -99,11 +108,16 @@ public class Database {
             File file = files[i];
             if (file.isFile()) {
                 try {
-                    String sql = readFile(file);
-                    Statement stmt = connection.createStatement();
-                    stmt.executeUpdate(sql);
-                    stmt.close();
-                    System.out.println("Script " + (i + 1) + " passed.");
+                    long scriptNumber = getScriptNumber(file);
+                    if (startRange < scriptNumber && scriptNumber <= endVersion) {
+                        String sql = readFile(file);
+                        Statement stmt = connection.createStatement();
+                        stmt.executeUpdate(sql);
+                        stmt.close();
+                        System.out.println("Script " + (i + 1) + " passed.");
+                    } else {
+                        System.out.println("Skipping over Script " + (i + 1) + ".");
+                    }
                 } catch (Exception e) {
                     System.err.println("There was an error with the following script: " + file.getName());
                     throw new Exception(e);
@@ -111,9 +125,13 @@ public class Database {
             }
         }
         connection.close();
-        System.out.println("Finished running all scripts.");
+        System.out.println("Database is now at version " + endVersion);
     }
-    private String readFile(File file) throws IOException {
+    private static long getScriptNumber(File file) {
+        String fileName = file.getName();
+        return Long.parseLong(fileName.substring(0, 3));
+    }
+    private static String readFile(File file) throws IOException {
         FileInputStream fis = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];
         fis.read(data);

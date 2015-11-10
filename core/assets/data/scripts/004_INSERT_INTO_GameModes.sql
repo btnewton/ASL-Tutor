@@ -1,3 +1,3 @@
-INSERT INTO GameModes (Name) VALUES ('Normal');
-INSERT INTO GameModes (Name) VALUES ('Quick Draw');
-INSERT INTO GameModes (Name) VALUES ('Survival');
+INSERT INTO GameModes (Name) VALUES ('NormalGame');
+INSERT INTO GameModes (Name) VALUES ('QuickDrawGame');
+INSERT INTO GameModes (Name) VALUES ('SurvivalGame');

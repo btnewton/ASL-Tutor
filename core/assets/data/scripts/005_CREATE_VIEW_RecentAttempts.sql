@@ -1,0 +1,1 @@
+CREATE VIEW RecentAttempts AS SELECT Id, User, Sign, GameMode, TimeToComplete, TestedAt FROM Attempts WHERE TestedAt > DATE('now', '-14 days');

@@ -4,11 +4,14 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.brandtnewtonsoftware.asle.models.Attempt;
 import com.brandtnewtonsoftware.asle.models.HandCalibrator;
 import com.brandtnewtonsoftware.asle.leap.LeapListener;
+import com.brandtnewtonsoftware.asle.models.SignPerformance;
 import com.brandtnewtonsoftware.asle.models.User;
-import com.brandtnewtonsoftware.asle.simulation.state.GameState;
-import com.brandtnewtonsoftware.asle.simulation.state.PromptEntranceStage;
+import com.brandtnewtonsoftware.asle.stage.PromptEntranceStage;
+import com.brandtnewtonsoftware.asle.stage.StageManager;
+import com.brandtnewtonsoftware.asle.stage.game.NormalGame;
 import com.brandtnewtonsoftware.asle.util.Database;
 import com.leapmotion.leap.Controller;
 
@@ -21,12 +24,13 @@ public class ASLTutorGame extends ApplicationAdapter implements Input.TextInputL
 	private Controller controller;
 	private final LeapListener listener = new LeapListener();
 
-	private GameState gameState;
+	private StageManager stageManager;
 	private static HandCalibrator handCalibrator = new HandCalibrator();
 
 	@Override
 	public void create() {
-		new Database();
+		Database.checkVersion();
+
 		controller = new Controller();
 		controller.addListener(listener);
 		listener.addPrimaryHandListener(handCalibrator::calibrate);
@@ -45,8 +49,8 @@ public class ASLTutorGame extends ApplicationAdapter implements Input.TextInputL
 	public void render() {
 		Gdx.gl.glClearColor(.93f, .41f, .31f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (gameState != null) {
-			gameState.render();
+		if (stageManager != null) {
+			stageManager.render();
 		}
 	}
 
@@ -54,10 +58,10 @@ public class ASLTutorGame extends ApplicationAdapter implements Input.TextInputL
 		return listener;
 	}
 
-	public void setGameState(GameState gameState) {
-		if (this.gameState != null)
-			this.gameState.dispose();
-		this.gameState = gameState;
+	public void setStageManager(StageManager stageManager) {
+		if (this.stageManager != null)
+			this.stageManager.dispose();
+		this.stageManager = stageManager;
 	}
 
 	public static HandCalibrator getHandCalibrator() {
@@ -66,7 +70,7 @@ public class ASLTutorGame extends ApplicationAdapter implements Input.TextInputL
 
 	@Override
 	public void input(String text) {
-		text = Database.sanitizeString(text.trim());
+		text = Database.sanitizeString(text.trim().toLowerCase());
 
 		if (!text.isEmpty()) {
 			User user = null;
@@ -83,7 +87,7 @@ public class ASLTutorGame extends ApplicationAdapter implements Input.TextInputL
 
 			if (user != null) {
 				ASLTutorGame.user = user;
-				Gdx.app.postRunnable(() -> setGameState(new PromptEntranceStage(this)));
+				Gdx.app.postRunnable(() -> setStageManager(new PromptEntranceStage(this)));
 				return;
 			}
 		}

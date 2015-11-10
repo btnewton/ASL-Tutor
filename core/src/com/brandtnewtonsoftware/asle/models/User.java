@@ -30,8 +30,7 @@ public class User {
     }
 
     public static User getUser(String name) throws SQLException {
-        Database database = new Database();
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         User user = null;
         PreparedStatement stmt = null;
 
@@ -65,8 +64,7 @@ public class User {
     }
 
     private void insert() throws SQLException {
-        Database database = new Database();
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         PreparedStatement stmt = null;
 
         try {
@@ -92,7 +90,7 @@ public class User {
     }
 
     private void update() throws SQLException {
-        Connection connection = new Database().getConnection();
+        Connection connection = Database.getConnection();
         PreparedStatement stmt = null;
 
         try{
