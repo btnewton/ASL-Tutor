@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import com.brandtnewtonsoftware.asle.ASLTutorGame;
@@ -17,6 +15,8 @@ import com.brandtnewtonsoftware.asle.models.sign.Sign;
 import com.brandtnewtonsoftware.asle.models.sign.SignAssignment;
 import com.brandtnewtonsoftware.asle.util.FontHelper;
 import com.leapmotion.leap.Hand;
+
+import java.awt.*;
 
 /**
  * Created by Brandt on 11/1/2015.
@@ -35,10 +35,14 @@ public class SignActor extends Actor implements PrimaryHandListener {
     public SignActor() {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(FontHelper.getThinFont()));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = FontHelper.getLargeFontSize();
+        final int fontSize = FontHelper.getLargeFontSize();
+        parameter.size = fontSize;
         parameter.color = Color.BLACK;
         font = generator.generateFont(parameter);
         generator.dispose();
+
+        setPosition(Gdx.graphics.getWidth() / 2 - 35, Gdx.graphics.getHeight() / 2 + 45);
+//        setBounds(getX(), getY(), fontSize, fontSize);
 
         showHelp = true;
     }
@@ -46,8 +50,6 @@ public class SignActor extends Actor implements PrimaryHandListener {
     public void changeSign(SignAssignment signAssignment) {
         sign = signAssignment.getSign();
         signTexture = new Texture(Gdx.files.internal(sign.getImageFileName()));
-        setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-        setBounds(getX(), getY(), signTexture.getWidth(), signTexture.getHeight());
         signComplete = false;
     }
 
@@ -61,10 +63,7 @@ public class SignActor extends Actor implements PrimaryHandListener {
             return;
 
         if (showHelp) {
-            Color c = this.getColor();
-
-            batch.setColor(c);
-
+            batch.setColor(getColor());
             batch.getColor().a *= parentAlpha;
             batch.draw(signTexture, getX(), getY(), getOriginX(), getOriginY(), getWidth(),
                     getHeight(), getScaleX(), getScaleY(), getRotation(), 0, 0,

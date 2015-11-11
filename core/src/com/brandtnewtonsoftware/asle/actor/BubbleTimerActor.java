@@ -2,18 +2,16 @@ package com.brandtnewtonsoftware.asle.actor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.brandtnewtonsoftware.asle.util.FontHelper;
+import com.brandtnewtonsoftware.asle.util.Stopwatch;
 
-import javax.swing.*;
 import java.text.DecimalFormat;
 
 /**
@@ -24,10 +22,11 @@ public class BubbleTimerActor extends Actor {
     private Sprite circle;
     private static DecimalFormat formatter = new DecimalFormat("0.0#");
     private long timeLimit;
-    private Long startTime;
+    private Stopwatch stopwatch;
     private BitmapFont font;
+    private float fontOffset;
 
-    public BubbleTimerActor() {
+    public BubbleTimerActor(Stopwatch stopwatch, int timeLimit) {
         final int WIDTH = Gdx.graphics.getWidth();
         final int HEIGHT = Gdx.graphics.getHeight();
 
@@ -38,49 +37,45 @@ public class BubbleTimerActor extends Actor {
         font = generator.generateFont(parameter);
         generator.dispose();
 
+        GlyphLayout layout = new GlyphLayout();
+        layout.setText(font, "0.0");
+        fontOffset = layout.width / 2;
+
+        this.timeLimit = timeLimit;
+        this.stopwatch = stopwatch;
+
         Texture texture = new Texture(Gdx.files.internal("img/white_circle.png"));
         circle = new Sprite(texture);
         circle.setAlpha(0.3f);
         circle.setSize(HEIGHT * .9f, HEIGHT * .9f);
-        circle.setCenter(circle.getWidth()/2, circle.getHeight()/2);
+        circle.setCenter(circle.getHeight()/2, circle.getHeight()/2);
 
+        circle.setOrigin(circle.getWidth()/2, circle.getHeight()/2);
         circle.setPosition(WIDTH / 2 - circle.getWidth() /2, HEIGHT / 2 - circle.getHeight()/2);
         circle.setBounds(circle.getX(), circle.getY(), circle.getWidth(), circle.getHeight());
     }
 
-    public void reset(long timeLimit) {
-        startTime = null;
+    public void setTimeLimit(long timeLimit) {
         this.timeLimit = timeLimit;
     }
 
-    public void start() {
-
-        startTime = System.currentTimeMillis();
-    }
-
-    public boolean isRunning() {
-        return startTime != null;
-    }
-
-    public long timeElapsed() {
-        long timeElapsed = 0;
-        if (isRunning()) {
-            timeElapsed = System.currentTimeMillis() - startTime;
-        }
-        return timeElapsed;
+    public void setStopwatch(Stopwatch stopwatch) {
+        this.stopwatch = stopwatch;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        double timeRemaining = timeLimit - timeElapsed();
+        double timeRemaining = timeLimit - stopwatch.getTimeElapsed();
         if (timeRemaining < 0)
             timeRemaining = 0;
 
         float radiusMultiplier = (float) (timeRemaining / timeLimit);
+
         circle.draw(batch);
         circle.setScale(radiusMultiplier);
 
         double seconds = timeRemaining / 1000.0;
-        font.draw(batch, formatter.format(seconds), Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/10);
+
+        font.draw(batch, formatter.format(seconds), Gdx.graphics.getWidth() / 2 - fontOffset, Gdx.graphics.getHeight() / 10);
     }
 }

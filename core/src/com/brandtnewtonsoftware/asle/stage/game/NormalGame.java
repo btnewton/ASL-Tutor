@@ -1,7 +1,10 @@
 package com.brandtnewtonsoftware.asle.stage.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.brandtnewtonsoftware.asle.ASLTutorGame;
+import com.brandtnewtonsoftware.asle.actor.BubbleTimerActor;
+import com.brandtnewtonsoftware.asle.actor.GridOverlayActor;
 import com.brandtnewtonsoftware.asle.models.Attempt;
 import com.brandtnewtonsoftware.asle.models.SignPerformance;
 import com.brandtnewtonsoftware.asle.models.User;
@@ -26,6 +29,7 @@ public final class NormalGame extends GameStage implements ActionListener {
     private Timer timer;
     private Stopwatch stopwatch;
     private Attempt attempt;
+    private BubbleTimerActor timerActor;
     private int streak;
     private String[] signValues;
 
@@ -33,7 +37,12 @@ public final class NormalGame extends GameStage implements ActionListener {
         super(game);
         signServer = new RandomSignServer();
         stopwatch = new Stopwatch();
-        timer = new Timer(2000, this);
+        timer = new Timer(10000, this);
+
+        timerActor = new BubbleTimerActor(stopwatch, timer.getDelay());
+        timerActor.setZIndex(0);
+
+        stage.addActor(timerActor);
 
         List<SignPerformance> signPerformances = SignPerformance.getSignPerformance(this);
         signValues = new String[signPerformances.size()];
@@ -43,8 +52,6 @@ public final class NormalGame extends GameStage implements ActionListener {
 
         signActor.changeSign(getNextSign());
     }
-
-
 
     @Override
     protected synchronized void signComplete(boolean signCorrect) {

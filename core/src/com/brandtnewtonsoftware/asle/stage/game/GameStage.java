@@ -3,6 +3,7 @@ package com.brandtnewtonsoftware.asle.stage.game;
 import com.badlogic.gdx.Gdx;
 import com.brandtnewtonsoftware.asle.ASLTutorGame;
 import com.brandtnewtonsoftware.asle.actor.BubbleTimerActor;
+import com.brandtnewtonsoftware.asle.actor.GridOverlayActor;
 import com.brandtnewtonsoftware.asle.models.User;
 import com.brandtnewtonsoftware.asle.actor.sign.SignActor;
 import com.brandtnewtonsoftware.asle.actor.sign.SignRegisteredListener;
@@ -22,25 +23,18 @@ import java.util.List;
 /**
  * Asks user to perform sign
  */
-public abstract class GameStage extends StageManager implements PrimaryHandListener, HandCountListener, SignRegisteredListener {
+public abstract class GameStage extends StageManager implements PrimaryHandListener, SignRegisteredListener {
 
     private List<PrimaryHandListener> primaryHandPositionListeners = new LinkedList<>();
     protected SuccessActor successActor;
+    private GridOverlayActor gridOverlayActor;
     protected SignActor signActor;
-    protected BubbleTimerActor timerActor;
 
     public GameStage(ASLTutorGame game) {
         super(game);
 
         LeapListener listener = game.getListener();
-        listener.addHandCountListener(this);
         listener.addPrimaryHandListener(this);
-
-        timerActor = new BubbleTimerActor();
-        timerActor.setZIndex(0);
-        stage.addActor(timerActor);
-        timerActor.reset(2000);
-        timerActor.start();
 
         signActor = new SignActor();
         signActor.setListener(this);
@@ -48,27 +42,24 @@ public abstract class GameStage extends StageManager implements PrimaryHandListe
         primaryHandPositionListeners.add(signActor);
         stage.addActor(signActor);
 
+        gridOverlayActor = new GridOverlayActor(5, 3);
+        stage.addActor(gridOverlayActor);
+
         successActor = new SuccessActor();
         successActor.setVisible(false);
         successActor.setZIndex(5);
         stage.addActor(successActor);
     }
 
+    protected void setGridLines(int horizontalCount, int verticleCount) {
+        gridOverlayActor.setHorizontalLineCount(horizontalCount);
+        gridOverlayActor.setVerticalLineCount(verticleCount);
+    }
+
     @Override
     public void dispose() {
         LeapListener listener = getGame().getListener();
         listener.removePrimaryHandListener(this);
-        listener.removeHandCountListener(this);
-    }
-
-    @Override
-    public void onHandCountChange(int handCount) {
-        if (handCount == 0) {
-            Gdx.app.postRunnable(() -> {
-                ASLTutorGame game = getGame();
-                game.setStageManager(new PromptEntranceStage(game));
-            });
-        }
     }
 
     @Override

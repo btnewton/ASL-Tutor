@@ -26,8 +26,7 @@ public class HandNotPresentActor extends Actor implements HandCountListener {
 
     @Override
     public void draw(Batch batch, float alpha){
-        Color c = this.getColor();
-        batch.setColor(c);
+        batch.setColor(getColor());
         // always make sure to only multiply by the parent alpha
         batch.getColor().a *= alpha;
         batch.draw(texture, getX(), getY(), getOriginX(), getOriginY(), getWidth(),
