@@ -20,11 +20,11 @@ import java.text.DecimalFormat;
 public class BubbleTimerActor extends Actor {
 
     private Sprite circle;
-    private static DecimalFormat formatter = new DecimalFormat("0.0#");
+    private static DecimalFormat formatter = new DecimalFormat("0.0");
     private long timeLimit;
     private Stopwatch stopwatch;
     private BitmapFont font;
-    private GlyphLayout layout;
+    private float fontOffset;
 
     public BubbleTimerActor(Stopwatch stopwatch, int timeLimit) {
         final int WIDTH = Gdx.graphics.getWidth();
@@ -37,7 +37,9 @@ public class BubbleTimerActor extends Actor {
         font = generator.generateFont(parameter);
         generator.dispose();
 
-        layout = new GlyphLayout();
+        GlyphLayout layout = new GlyphLayout();
+        layout.setText(font, "0.0");
+        fontOffset = layout.width / 2;
 
         this.timeLimit = timeLimit;
         this.stopwatch = stopwatch;
@@ -73,7 +75,6 @@ public class BubbleTimerActor extends Actor {
         circle.setScale(radiusMultiplier);
 
         String seconds = formatter.format(timeRemaining / 1000.0);
-        layout.setText(font, seconds.substring(0, seconds.indexOf('.')) + ".0");
-        font.draw(batch, seconds, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 10);
+        font.draw(batch, seconds, Gdx.graphics.getWidth() / 2 - fontOffset, Gdx.graphics.getHeight() / 10);
     }
 }

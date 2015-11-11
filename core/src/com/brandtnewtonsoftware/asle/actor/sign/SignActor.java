@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
@@ -29,6 +30,8 @@ public class SignActor extends Actor implements PrimaryHandListener {
     private BitmapFont font;
     private boolean showHelp;
     private boolean signComplete;
+    private float xFontOffset;
+    private float yFontOffset;
 
     private boolean leftHanded;
 
@@ -39,9 +42,10 @@ public class SignActor extends Actor implements PrimaryHandListener {
         parameter.size = fontSize;
         parameter.color = Color.BLACK;
         font = generator.generateFont(parameter);
+
         generator.dispose();
 
-        setPosition(Gdx.graphics.getWidth() / 2 - 35, Gdx.graphics.getHeight() / 2 + 45);
+        setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
         showHelp = true;
     }
@@ -50,6 +54,11 @@ public class SignActor extends Actor implements PrimaryHandListener {
         sign = signAssignment.getSign();
         signTexture = new Texture(Gdx.files.internal(sign.getImageFileName()));
         signComplete = false;
+
+        GlyphLayout layout = new GlyphLayout();
+        layout.setText(font, Integer.toString(sign.getValue()));
+        xFontOffset = layout.width / 2;
+        yFontOffset = layout.height / 2;
     }
 
     public void setShowHelp(boolean showHelp) {
@@ -70,7 +79,7 @@ public class SignActor extends Actor implements PrimaryHandListener {
             batch.setColor(Color.BLACK);
         }
 
-        font.draw(batch, Integer.toString(sign.getValue()), getX(), getY());
+        font.draw(batch, Integer.toString(sign.getValue()), getX() - xFontOffset, getY() + yFontOffset);
     }
 
     public void setListener(SignRegisteredListener listener) {
