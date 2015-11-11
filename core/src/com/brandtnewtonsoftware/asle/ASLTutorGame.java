@@ -87,7 +87,8 @@ public class ASLTutorGame extends ApplicationAdapter implements Input.TextInputL
 
 			if (user != null) {
 				ASLTutorGame.user = user;
-				Gdx.app.postRunnable(() -> setStageManager(new PromptEntranceStage(this)));
+//				Gdx.app.postRunnable(() -> setStageManager(new PromptEntranceStage(this)));
+				Gdx.app.postRunnable(() -> setStageManager(new NormalGame(this)));
 				return;
 			}
 		}

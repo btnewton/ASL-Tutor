@@ -40,9 +40,6 @@ public final class NormalGame extends GameStage implements ActionListener {
         timer = new Timer(10000, this);
 
         timerActor = new BubbleTimerActor(stopwatch, timer.getDelay());
-        timerActor.setZIndex(0);
-
-        stage.addActor(timerActor);
 
         List<SignPerformance> signPerformances = SignPerformance.getSignPerformance(this);
         signValues = new String[signPerformances.size()];
@@ -51,6 +48,12 @@ public final class NormalGame extends GameStage implements ActionListener {
         }
 
         signActor.changeSign(getNextSign());
+
+        // Order actors are added determines render order
+        stage.addActor(timerActor);
+        stage.addActor(signActor);
+        stage.addActor(successActor);
+        stage.addActor(gridOverlayActor);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class GridOverlayActor extends Actor implements InputProcessor {
     private int verticalLineCount;
     private int horizontalLineCount;
     private ShapeRenderer shapeRenderer;
-    private static boolean staticVisibleFlag = true;
+    private static boolean staticVisibleFlag = false;
 
     public GridOverlayActor(int verticalLineCount, int horizontalLineCount) {
         this.verticalLineCount = verticalLineCount;

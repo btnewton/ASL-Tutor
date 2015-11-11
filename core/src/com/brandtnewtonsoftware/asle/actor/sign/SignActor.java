@@ -42,7 +42,6 @@ public class SignActor extends Actor implements PrimaryHandListener {
         generator.dispose();
 
         setPosition(Gdx.graphics.getWidth() / 2 - 35, Gdx.graphics.getHeight() / 2 + 45);
-//        setBounds(getX(), getY(), fontSize, fontSize);
 
         showHelp = true;
     }

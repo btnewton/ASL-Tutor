@@ -24,7 +24,7 @@ public class BubbleTimerActor extends Actor {
     private long timeLimit;
     private Stopwatch stopwatch;
     private BitmapFont font;
-    private float fontOffset;
+    private GlyphLayout layout;
 
     public BubbleTimerActor(Stopwatch stopwatch, int timeLimit) {
         final int WIDTH = Gdx.graphics.getWidth();
@@ -37,9 +37,7 @@ public class BubbleTimerActor extends Actor {
         font = generator.generateFont(parameter);
         generator.dispose();
 
-        GlyphLayout layout = new GlyphLayout();
-        layout.setText(font, "0.0");
-        fontOffset = layout.width / 2;
+        layout = new GlyphLayout();
 
         this.timeLimit = timeLimit;
         this.stopwatch = stopwatch;
@@ -50,7 +48,7 @@ public class BubbleTimerActor extends Actor {
         circle.setSize(HEIGHT * .9f, HEIGHT * .9f);
         circle.setCenter(circle.getHeight()/2, circle.getHeight()/2);
 
-        circle.setOrigin(circle.getWidth()/2, circle.getHeight()/2);
+        circle.setOrigin(circle.getWidth() / 2, circle.getHeight() / 2);
         circle.setPosition(WIDTH / 2 - circle.getWidth() /2, HEIGHT / 2 - circle.getHeight()/2);
         circle.setBounds(circle.getX(), circle.getY(), circle.getWidth(), circle.getHeight());
     }
@@ -74,8 +72,8 @@ public class BubbleTimerActor extends Actor {
         circle.draw(batch);
         circle.setScale(radiusMultiplier);
 
-        double seconds = timeRemaining / 1000.0;
-
-        font.draw(batch, formatter.format(seconds), Gdx.graphics.getWidth() / 2 - fontOffset, Gdx.graphics.getHeight() / 10);
+        String seconds = formatter.format(timeRemaining / 1000.0);
+        layout.setText(font, seconds.substring(0, seconds.indexOf('.')) + ".0");
+        font.draw(batch, seconds, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 10);
     }
 }

@@ -26,9 +26,9 @@ import java.util.List;
 public abstract class GameStage extends StageManager implements PrimaryHandListener, SignRegisteredListener {
 
     private List<PrimaryHandListener> primaryHandPositionListeners = new LinkedList<>();
-    protected SuccessActor successActor;
-    private GridOverlayActor gridOverlayActor;
-    protected SignActor signActor;
+    protected final SuccessActor successActor;
+    protected final GridOverlayActor gridOverlayActor;
+    protected final SignActor signActor;
 
     public GameStage(ASLTutorGame game) {
         super(game);
@@ -38,17 +38,13 @@ public abstract class GameStage extends StageManager implements PrimaryHandListe
 
         signActor = new SignActor();
         signActor.setListener(this);
-        signActor.setZIndex(5);
+        signActor.toFront();
         primaryHandPositionListeners.add(signActor);
-        stage.addActor(signActor);
 
         gridOverlayActor = new GridOverlayActor(5, 3);
-        stage.addActor(gridOverlayActor);
 
         successActor = new SuccessActor();
         successActor.setVisible(false);
-        successActor.setZIndex(5);
-        stage.addActor(successActor);
     }
 
     protected void setGridLines(int horizontalCount, int verticleCount) {
