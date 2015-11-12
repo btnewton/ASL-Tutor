@@ -6,6 +6,6 @@ package com.brandtnewtonsoftware.asle.models.sign;
 public class Sign4 extends Sign {
 
     public Sign4() {
-        super(4, new boolean[]{false, true, true, true, true});
+        super('4', new boolean[]{false, true, true, true, true});
     }
 }

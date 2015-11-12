@@ -23,7 +23,7 @@ public class SignAttemptSummary {
 
         try {
             stmt = connection.prepareStatement("SELECT AVG(TimeToComplete) AS AverageTimeToComplete, SUM(Success) AS TotalSuccess, Count(*) AS TotalAttempts FROM Attempts WHERE Sign LIKE ? AND User=?");
-            stmt.setString(1, Integer.toString(sign.getValue()));
+            stmt.setString(1, Character.toString(sign.getValue()));
             stmt.setInt(2, user.getId());
 
             ResultSet results = stmt.executeQuery();

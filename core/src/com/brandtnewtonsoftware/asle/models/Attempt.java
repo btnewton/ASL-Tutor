@@ -58,7 +58,7 @@ public class Attempt {
             stmt = connection.prepareStatement("INSERT INTO Attempts (User, Sign, GameMode, TimeToComplete, TestedAt) " +
                     "VALUES (?,?,?,?,?)");
             stmt.setInt(1, user.getId());
-            stmt.setString(2, Integer.toString(sign.getValue()));
+            stmt.setString(2, Character.toString(sign.getValue()));
             stmt.setString(3, gameStage.getName());
             if (timeToComplete != null)
                 stmt.setInt(4, timeToComplete);

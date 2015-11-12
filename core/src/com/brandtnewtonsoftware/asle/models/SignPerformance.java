@@ -29,7 +29,7 @@ public class SignPerformance {
         try {
             PreparedStatement stmt = connection.prepareStatement(
                     "SELECT RecentAttempts.Sign, CAST(SuccessCount AS FLOAT) / COUNT(*) AS SuccessRate, COUNT(*) AS TotalAttempts " +
-                            "FROM RecentAttempts LEFT JOIN " +
+                            "FROM RecentAttempts JOIN " +
                             "(SELECT Sign, COUNT(*) AS SuccessCount FROM RecentAttempts WHERE TimeToComplete NOT NULL AND GameMode=? GROUP BY Sign) AS RecentSuccessAttempts ON RecentSuccessAttempts.Sign=RecentAttempts.Sign " +
                             "WHERE GameMode=? " +
                             "GROUP BY RecentAttempts.Sign ORDER BY SuccessRate ASC LIMIT 100");
@@ -40,9 +40,9 @@ public class SignPerformance {
             ResultSet results = stmt.executeQuery();
 
             while(results.next()) {
-                String sign = results.getString(1);
-                double successRate = results.getDouble(2);
-                int totalAttempts = results.getInt(3);
+                String sign = results.getString("RecentAttempts.Sign");
+                double successRate = results.getDouble("SuccessRate");
+                int totalAttempts = results.getInt("TotalAttempts");
                 signPerformances.add(new SignPerformance(sign, successRate, totalAttempts));
                 signs[Integer.parseInt(sign)] = null;
             }
