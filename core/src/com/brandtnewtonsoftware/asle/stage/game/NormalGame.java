@@ -2,7 +2,8 @@ package com.brandtnewtonsoftware.asle.stage.game;
 
 import com.badlogic.gdx.Gdx;
 import com.brandtnewtonsoftware.asle.ASLTutorGame;
-import com.brandtnewtonsoftware.asle.actor.BubbleTimerActor;
+import com.brandtnewtonsoftware.asle.actor.ArcTimerActor;
+import com.brandtnewtonsoftware.asle.actor.ExperienceActor;
 import com.brandtnewtonsoftware.asle.leap.HandCountListener;
 import com.brandtnewtonsoftware.asle.models.Attempt;
 import com.brandtnewtonsoftware.asle.models.SignPerformance;
@@ -30,14 +31,15 @@ public final class NormalGame extends GameStage implements ActionListener, HandC
     private int streak;
     private int score;
     private Sign[] signValues;
-    private BubbleTimerActor timerActor;
+    private ArcTimerActor timerActor;
+    private ExperienceActor xpActor;
 
     public NormalGame(ASLTutorGame game) {
         super(game);
         stopwatch = new Stopwatch();
         timer = new Timer(3000, this);
 
-        timerActor = new BubbleTimerActor(stopwatch, timer.getDelay());
+        timerActor = new ArcTimerActor(stopwatch, timer.getDelay());
 
         game.getListener().addHandCountListener(this);
 
@@ -49,14 +51,22 @@ public final class NormalGame extends GameStage implements ActionListener, HandC
 
         signActor.changeSign(getNextSign());
 
+        xpActor = new ExperienceActor(ASLTutorGame.getUser().getExperience());
+
         // Order actors are added determines render order
         stage.addActor(timerActor);
         stage.addActor(signActor);
         stage.addActor(hudActor);
+        stage.addActor(xpActor);
+
         stage.addActor(gridOverlayActor);
     }
 
     private void addScore(int points) {
+        User user = ASLTutorGame.getUser();
+        // TODO remove ABS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        user.getExperience().addExperience(Math.abs(points));
+
         score += points;
         if (score < 0) {
             score = 0;

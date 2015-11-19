@@ -2,28 +2,30 @@ package com.brandtnewtonsoftware.asle.models;
 
 import com.brandtnewtonsoftware.asle.util.Database;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * Created by Brandt on 11/4/2015.
  */
 public class User {
 
+    private Experience experience;
     private Integer id;
     private final String name;
     private int loginCount;
 
     public User(String name) {
+        experience = new Experience();
         this.name = name;
         loginCount = 0;
     }
 
     private User(int id, String name, int loginCount) {
+
+        experience = new Experience();
         this.id = id;
         this.name = name;
         this.loginCount = loginCount;
@@ -61,6 +63,10 @@ public class User {
         } else {
             update();
         }
+    }
+
+    public Experience getExperience() {
+        return experience;
     }
 
     private void insert() throws SQLException {
