@@ -6,6 +6,7 @@ import com.brandtnewtonsoftware.asle.actor.ArcTimerActor;
 import com.brandtnewtonsoftware.asle.actor.ExperienceActor;
 import com.brandtnewtonsoftware.asle.leap.HandCountListener;
 import com.brandtnewtonsoftware.asle.models.Attempt;
+import com.brandtnewtonsoftware.asle.models.Experience;
 import com.brandtnewtonsoftware.asle.models.SignPerformance;
 import com.brandtnewtonsoftware.asle.models.User;
 import com.brandtnewtonsoftware.asle.models.sign.Sign;
@@ -25,25 +26,25 @@ import java.util.Random;
  */
 public final class NormalGame extends GameStage implements ActionListener, HandCountListener {
 
+    public static final int INITIAL_DELAY = 5000;
     private Timer timer;
     private Stopwatch stopwatch;
     private Attempt attempt;
     private int streak;
-    private int score;
     private Sign[] signValues;
     private ArcTimerActor timerActor;
-    private ExperienceActor xpActor;
+    private List<SignPerformance> signPerformances;
 
     public NormalGame(ASLTutorGame game) {
         super(game);
         stopwatch = new Stopwatch();
-        timer = new Timer(3000, this);
+        timer = new Timer(INITIAL_DELAY, this);
 
         timerActor = new ArcTimerActor(stopwatch, timer.getDelay());
 
         game.getListener().addHandCountListener(this);
 
-        List<SignPerformance> signPerformances = SignPerformance.getSignPerformance(this);
+        signPerformances = SignPerformance.getSignPerformance(this);
         signValues = new Sign[signPerformances.size()];
         for (int i = 0; i < signValues.length; i++) {
             signValues[i] = SignFactory.make(signPerformances.get(i).getSignValue());
@@ -51,26 +52,19 @@ public final class NormalGame extends GameStage implements ActionListener, HandC
 
         signActor.changeSign(getNextSign());
 
-        xpActor = new ExperienceActor(ASLTutorGame.getUser().getExperience());
+        ExperienceActor xpActor = new ExperienceActor(ASLTutorGame.getUser().getExperience());
 
         // Order actors are added determines render order
         stage.addActor(timerActor);
         stage.addActor(signActor);
-        stage.addActor(hudActor);
         stage.addActor(xpActor);
 
         stage.addActor(gridOverlayActor);
     }
 
-    private void addScore(int points) {
+    private void addExperience(int xp) {
         User user = ASLTutorGame.getUser();
-        // TODO remove ABS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        user.getExperience().addExperience(Math.abs(points));
-
-        score += points;
-        if (score < 0) {
-            score = 0;
-        }
+        user.getExperience().addExperience(xp);
     }
 
     private double getMultiplier() {
@@ -86,15 +80,12 @@ public final class NormalGame extends GameStage implements ActionListener, HandC
 
         if (signCorrect) {
             streak++;
-            addScore((int) (100 * getMultiplier()));
+            addExperience((int) (100 * getMultiplier()));
             attempt.setTimeToComplete((int) stopwatch.getTimeElapsed());
         } else {
             streak = 0;
-            addScore(-5);
+            addExperience(-50);
         }
-
-        hudActor.setScoreText(Integer.toString(score));
-        hudActor.setStreakText(Integer.toString(streak));
 
         User user = ASLTutorGame.getUser();
         try {
@@ -108,14 +99,18 @@ public final class NormalGame extends GameStage implements ActionListener, HandC
 
     @Override
     protected SignAssignment getNextSign() {
-        int level = getLevel();
+        Experience experience = ASLTutorGame.getUser().getExperience();
+        int level = experience.getLevel();
 
-        int delay = 3000 - level * 100;
-        timer.setDelay(delay);
+        int delay = INITIAL_DELAY - level * 100;
+        timer.setInitialDelay(delay);
         timerActor.setTimeLimit(delay);
 
-        Random random = new Random();
-        Sign sign = signValues[random.nextInt(level)];
+        int maxSignIndex = level + 2;
+        if (maxSignIndex > signValues.length) {
+            maxSignIndex = signValues.length;
+        }
+        Sign sign = getNewSign(maxSignIndex);
         attempt = new Attempt(sign);
 
         stopwatch.reset();
@@ -127,22 +122,34 @@ public final class NormalGame extends GameStage implements ActionListener, HandC
             timer.start();
         }
 
-        return new SignAssignment(sign, 500);
+        return new SignAssignment(getSignPerformance(sign));
     }
 
-    private void changeTimeLimit(int timeLimit) {
-        timer.setDelay(timeLimit);
-
-    }
-
-    private int getLevel() {
-        int level = score / 5000 + 3;
-        if (level > signValues.length) {
-            level = signValues.length;
+    private SignPerformance getSignPerformance(Sign sign) {
+        SignPerformance signPerformance = null;
+        for (SignPerformance performance : signPerformances) {
+            if (performance.getSignValue() == sign.getValue()) {
+                signPerformance = performance;
+                break;
+            }
         }
-        System.out.println("LEVEL: " + level);
+        return signPerformance;
+    }
 
-        return level;
+    private Sign getNewSign(int maxSignIndex) {
+        Random random = new Random();
+        int selectedIndex = random.nextInt(maxSignIndex);
+        Sign sign = signValues[selectedIndex];
+
+        if (attempt != null && sign.equals(attempt.getSign())) {
+            if (selectedIndex > 0) {
+                selectedIndex--;
+            } else {
+                selectedIndex++;
+            }
+            sign = signValues[selectedIndex];
+        }
+        return sign;
     }
 
     @Override

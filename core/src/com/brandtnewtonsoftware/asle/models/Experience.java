@@ -8,68 +8,51 @@ import java.util.List;
  */
 public class Experience {
 
+    public static final int MAX_LEVEL = 20;
     private int currentLevel;
     private int experience;
-    private List<ExperienceListener> experienceListeners;
+    private Integer[] levelRequirements = new Integer[MAX_LEVEL];
 
     public Experience() {
         this(0);
     }
 
     public Experience(int experience) {
-        experienceListeners = new ArrayList<>();
         addExperience(experience);
     }
 
     public void addExperience(int experience) {
         this.experience += experience;
-        onExperienceAdded(experience);
+        updateLevel();
     }
 
     public int getExperience() {
         return experience;
     }
 
+    /**
+     * Performs a recursive call in case xp was enough to level more than once.
+     */
     private void updateLevel() {
         if (experience >= requiredExperienceForLevel(currentLevel + 1)) {
             currentLevel++;
-            onLevelChanged();
-        } else if (experience < requiredExperienceForLevel(currentLevel)) {
+            System.out.println("Level Updated to " + getLevel());
+            updateLevel();
+        } else if (currentLevel > 0 && experience < requiredExperienceForLevel(currentLevel)) {
             currentLevel--;
-            onLevelChanged();
+            System.out.println("Level Updated to " + getLevel());
+            updateLevel();
         }
-    }
-
-    private double getProgressToNextLevel() {
-        return (experience / requiredExperienceForLevel(currentLevel + 1)) * 100;
     }
 
     public int requiredExperienceForLevel(int level) {
-        return (int) ((Math.pow(level, 1.5) * 500) + 500);
+        if (levelRequirements[level] == null) {
+            levelRequirements[level] = (int) ((Math.pow(level + 1, 1.5) * 500) + 500);
+        }
+        return levelRequirements[level];
     }
+
     public int getLevel() {
         return currentLevel;
-    }
-
-    public void addExperienceListener(ExperienceListener experienceListener) {
-        experienceListeners.add(experienceListener);
-    }
-    public void removeExperienceListener(ExperienceListener experienceListener) {
-        experienceListeners.remove(experienceListener);
-    }
-    public void onExperienceAdded(int experience) {
-        for (ExperienceListener listener : experienceListeners){
-            listener.experienceAdded(experience);
-        }
-    }
-    public void onLevelChanged() {
-        for (ExperienceListener listener : experienceListeners) {
-            listener.levelChanged(currentLevel);
-        }
-    }
-
-    public interface ExperienceListener {
-        void experienceAdded(int experience);
-        void levelChanged(int newLevel);
     }
 }

@@ -56,10 +56,6 @@ public class ArcTimerActor extends Actor {
         this.timeLimit = timeLimit;
     }
 
-    public void setStopwatch(Stopwatch stopwatch) {
-        this.stopwatch = stopwatch;
-    }
-
     @Override
     public void draw(Batch batch, float parentAlpha) {
         double timeRemaining = timeLimit - stopwatch.getTimeElapsed();

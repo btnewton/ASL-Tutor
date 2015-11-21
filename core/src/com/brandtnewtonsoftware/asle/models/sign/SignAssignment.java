@@ -1,35 +1,17 @@
 package com.brandtnewtonsoftware.asle.models.sign;
 
+import com.brandtnewtonsoftware.asle.models.SignPerformance;
+
 /**
  * Created by Brandt on 11/9/2015.
  */
 public final class SignAssignment {
 
-    private Sign sign;
-    private Integer hintTimeLimit;
+    public final SignPerformance performance;
+    public final Sign sign;
 
-    public SignAssignment(Sign sign) {
-        this(sign, null);
-    }
-
-    public SignAssignment(Sign sign, int hintTimeLimit) {
-        this(sign, (Integer) hintTimeLimit);
-    }
-
-    private SignAssignment(Sign sign, Integer hintTimeLimit) {
-        this.sign = sign;
-        this.hintTimeLimit = hintTimeLimit;
-    }
-
-    public boolean hasHintTimeLimit() {
-        return hintTimeLimit != null;
-    }
-
-    public int getHintTimeLimit() {
-        return hintTimeLimit;
-    }
-
-    public Sign getSign() {
-        return sign;
+    public SignAssignment(SignPerformance performance) {
+        this.performance = performance;
+        sign = SignFactory.make(performance.getSignValue());
     }
 }

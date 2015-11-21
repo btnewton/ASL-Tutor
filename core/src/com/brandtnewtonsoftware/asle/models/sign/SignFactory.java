@@ -5,7 +5,7 @@ package com.brandtnewtonsoftware.asle.models.sign;
  */
 public class SignFactory {
 
-    public static Sign make(String value) {
+    public static Sign make(char value) {
         Sign sign;
         try {
             sign = (Sign) Class.forName("com.brandtnewtonsoftware.asle.models.sign.Sign" + value).getConstructor().newInstance();

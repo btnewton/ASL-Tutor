@@ -13,7 +13,7 @@ public class DesktopLauncher {
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int) screenSize.getWidth();
-		int height = (int) screenSize.getHeight() - 50;
+		int height = (int) screenSize.getHeight();
 
 		config.resizable = false;
 
@@ -21,7 +21,6 @@ public class DesktopLauncher {
 		config.height = height;
 		config.title = "ASL Tutor";
 
-		// fullscreen
 //		config.fullscreen = true;
 		new LwjglApplication(new ASLTutorGame(), config);
 	}

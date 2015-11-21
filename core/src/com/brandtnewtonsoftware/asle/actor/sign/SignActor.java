@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,9 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.brandtnewtonsoftware.asle.ASLTutorGame;
 import com.brandtnewtonsoftware.asle.models.RelativeHand;
 import com.brandtnewtonsoftware.asle.leap.PrimaryHandListener;
-import com.brandtnewtonsoftware.asle.models.sign.Sign;
 import com.brandtnewtonsoftware.asle.models.sign.SignAssignment;
 import com.brandtnewtonsoftware.asle.util.FontHelper;
+import com.brandtnewtonsoftware.asle.util.MeasuredString;
 import com.leapmotion.leap.Hand;
 
 /**
@@ -24,13 +23,14 @@ import com.leapmotion.leap.Hand;
 public class SignActor extends Actor implements PrimaryHandListener {
 
     private Sprite signSprite;
-    private Sign sign;
+    private SignAssignment signAssignment;
     private SignRegisteredListener listener;
-    private BitmapFont font;
+
     private boolean showSign;
     private boolean signComplete;
-    private float xFontOffset;
-    private float yFontOffset;
+
+    private MeasuredString proficiency;
+    private MeasuredString signText;
 
     private boolean leftHanded;
 
@@ -39,25 +39,29 @@ public class SignActor extends Actor implements PrimaryHandListener {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = FontHelper.getLargeFontSize();
         parameter.color = Color.BLACK;
-        font = generator.generateFont(parameter);
+        BitmapFont font = generator.generateFont(parameter);
+//        parameter.size = FontHelper.getSmallFontSize();
+//        BitmapFont smallFont = generator.generateFont(parameter);
         generator.dispose();
+
+        signText = new MeasuredString(font);
+//        proficiency = new MeasuredString(smallFont);
 
         setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
     }
 
     public void changeSign(SignAssignment signAssignment) {
-        sign = signAssignment.getSign();
-        Texture signTexture = new Texture(Gdx.files.internal(sign.getImageFileName()));
+        this.signAssignment = signAssignment;
+        Texture signTexture = new Texture(Gdx.files.internal(signAssignment.sign.getImageFileName()));
         signSprite = new Sprite(signTexture);
         signSprite.setPosition(Gdx.graphics.getWidth() /5, Gdx.graphics.getHeight() /2 - signSprite.getHeight() /2);
         signSprite.setBounds(signSprite.getX(), signSprite.getY(), signSprite.getWidth(), signSprite.getHeight());
         signSprite.flip(leftHanded, false);
         signComplete = false;
 
-        GlyphLayout layout = new GlyphLayout();
-        layout.setText(font, Character.toString(sign.getValue()));
-        xFontOffset = layout.width / 2;
-        yFontOffset = layout.height / 2;
+        signText.update("SDFSDF");
+//        signText.update(Character.toString(signAssignment.sign.getValue()));
+//        proficiency.update("Proficiency: " + signAssignment.performance.getProficiencyRating());
     }
 
     public void setShowSign(boolean showSign) {
@@ -67,12 +71,11 @@ public class SignActor extends Actor implements PrimaryHandListener {
     @Override
     public void draw(Batch batch, float parentAlpha){
 
-//        TODO remove comments
         if (showSign) {
             signSprite.draw(batch);
         }
 
-        font.draw(batch, Character.toString(sign.getValue()), getX() - xFontOffset, getY() + yFontOffset);
+        signText.draw(batch, signText.getCenteredX(getX()), signText.getCenteredY(getY()));
     }
 
     public void setListener(SignRegisteredListener listener) {
@@ -93,7 +96,7 @@ public class SignActor extends Actor implements PrimaryHandListener {
 
         if (!signComplete) {
             RelativeHand relativeHand = ASLTutorGame.getHandCalibrator().evaluateHand(hand);
-            listener.onSignRegistered(sign, sign.equals(relativeHand));
+            listener.onSignRegistered(signAssignment.sign, signAssignment.sign.equals(relativeHand));
         }
     }
 }

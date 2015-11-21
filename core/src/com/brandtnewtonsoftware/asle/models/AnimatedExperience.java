@@ -21,6 +21,10 @@ public final class AnimatedExperience extends Experience implements ActionListen
         totalExperienceNeeded = requiredExperienceForLevel(getLevel());
     }
 
+    public int getProgress() {
+        return (int) (animatedExperience / (double) totalExperienceNeeded * 100);
+    }
+
     @Override
     public void addExperience(int experience) {
         super.addExperience(experience);
@@ -33,8 +37,5 @@ public final class AnimatedExperience extends Experience implements ActionListen
         experienceToAdd -= experienceIncrement;
         animatedExperience += experienceIncrement;
 
-        if () {
-
-        }
     }
 }
