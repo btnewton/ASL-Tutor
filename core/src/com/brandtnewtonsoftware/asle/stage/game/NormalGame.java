@@ -3,7 +3,7 @@ package com.brandtnewtonsoftware.asle.stage.game;
 import com.badlogic.gdx.Gdx;
 import com.brandtnewtonsoftware.asle.ASLTutorGame;
 import com.brandtnewtonsoftware.asle.actor.ArcTimerActor;
-import com.brandtnewtonsoftware.asle.actor.ExperienceActor;
+import com.brandtnewtonsoftware.asle.actor.HudActor;
 import com.brandtnewtonsoftware.asle.leap.HandCountListener;
 import com.brandtnewtonsoftware.asle.models.Attempt;
 import com.brandtnewtonsoftware.asle.models.Experience;
@@ -52,12 +52,13 @@ public final class NormalGame extends GameStage implements ActionListener, HandC
 
         signActor.changeSign(getNextSign());
 
-        ExperienceActor xpActor = new ExperienceActor(ASLTutorGame.getUser().getExperience());
+        HudActor hudActor= new HudActor(ASLTutorGame.getUser().getExperience());
 
         // Order actors are added determines render order
+        stage.addActor(hudActor);
+
         stage.addActor(timerActor);
         stage.addActor(signActor);
-        stage.addActor(xpActor);
 
         stage.addActor(gridOverlayActor);
     }

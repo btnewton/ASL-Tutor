@@ -29,23 +29,17 @@ public class SignActor extends Actor implements PrimaryHandListener {
     private boolean showSign;
     private boolean signComplete;
 
-    private MeasuredString proficiency;
-    private MeasuredString signText;
+    BitmapFont font;
 
     private boolean leftHanded;
 
     public SignActor() {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(FontHelper.getThinFont()));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = FontHelper.getLargeFontSize();
+        parameter.size = FontHelper.getSmallFontSize();
         parameter.color = Color.BLACK;
-        BitmapFont font = generator.generateFont(parameter);
-//        parameter.size = FontHelper.getSmallFontSize();
-//        BitmapFont smallFont = generator.generateFont(parameter);
+        font = generator.generateFont(parameter);
         generator.dispose();
-
-        signText = new MeasuredString(font);
-//        proficiency = new MeasuredString(smallFont);
 
         setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
     }
@@ -59,7 +53,6 @@ public class SignActor extends Actor implements PrimaryHandListener {
         signSprite.flip(leftHanded, false);
         signComplete = false;
 
-        signText.update("SDFSDF");
 //        signText.update(Character.toString(signAssignment.sign.getValue()));
 //        proficiency.update("Proficiency: " + signAssignment.performance.getProficiencyRating());
     }
@@ -75,7 +68,7 @@ public class SignActor extends Actor implements PrimaryHandListener {
             signSprite.draw(batch);
         }
 
-        signText.draw(batch, signText.getCenteredX(getX()), signText.getCenteredY(getY()));
+        font.draw(batch, "SDF", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
     }
 
     public void setListener(SignRegisteredListener listener) {

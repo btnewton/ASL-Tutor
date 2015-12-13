@@ -79,7 +79,7 @@ public class ArcTimerActor extends Actor {
         try {
             shapeRenderer.arc(getX(), getY(), radius, 0, 360 * radiusMultiplier);
         } catch (Exception e){
-            
+
         }
 
         shapeRenderer.end();

@@ -23,15 +23,11 @@ public abstract class GameStage extends StageManager implements PrimaryHandListe
     private List<PrimaryHandListener> primaryHandPositionListeners = new LinkedList<>();
     protected final GridOverlayActor gridOverlayActor;
     protected final SignActor signActor;
-    protected final HandPositionActor handPositionActor;
 
     public GameStage(ASLTutorGame game) {
         super(game);
 
         game.getListener().addPrimaryHandListener(this);
-
-        handPositionActor = new HandPositionActor();
-        stage.addActor(handPositionActor);
 
         signActor = new SignActor();
         signActor.setListener(this);
